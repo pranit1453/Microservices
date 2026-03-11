@@ -1,9 +1,9 @@
-package com.demo.user.exception.checked;
+package com.demo.user.exception.custom;
 
-import com.demo.user.exception.BaseCheckedException;
+import com.demo.user.exception.BaseException;
 import org.springframework.http.HttpStatus;
 
-public class ExternalServiceException extends BaseCheckedException {
+public class ExternalServiceException extends BaseException {
     public ExternalServiceException(String message) {
         super(message, HttpStatus.SERVICE_UNAVAILABLE);
     }

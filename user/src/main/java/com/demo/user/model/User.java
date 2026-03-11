@@ -1,20 +1,26 @@
-package com.demo.user.model.entities;
+package com.demo.user.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
-
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Table(
         name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_user_email", columnNames = "email"),
+                @UniqueConstraint(name = "uk_user_phone", columnNames = "phone")
+        },
         indexes = {
-                @Index(name = "idx_user_email", columnList = "email"),
-                @Index(name = "idx_user_phone", columnList = "phone")
+                @Index(name = "idx_user_active", columnList = "active")
         }
 )
+@SQLDelete(sql = "UPDATE users SET active = false, deleted_at = now() WHERE user_id = ?")
+@SQLRestriction("active = true")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -44,10 +50,10 @@ public class User {
     private String email;
 
     @Pattern(
-            regexp = "^[0-9]{10,15}$",
-            message = "Phone number must contain only digits and be between 10 and 15 characters"
+            regexp = "^[0-9]{10,13}$",
+            message = "Phone number must contain only digits and be between 10 and 13 characters"
     )
-    @Column(unique = true, length = 10)
+    @Column(unique = true, length = 13)
     private String phone;
 
     @Size(max = 255, message = "Address cannot exceed 255 characters")
@@ -55,7 +61,8 @@ public class User {
     private String address;
 
     @Column(nullable = false)
-    private boolean active;
+    @Builder.Default
+    private boolean active = true;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -63,6 +70,8 @@ public class User {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
 
     @PrePersist
     protected void onCreate() {
@@ -72,11 +81,7 @@ public class User {
         if (this.createdAt == null)
             this.createdAt = now;
 
-
         this.updatedAt = now;
-
-        if (!this.active)
-            this.active = true;
 
     }
 

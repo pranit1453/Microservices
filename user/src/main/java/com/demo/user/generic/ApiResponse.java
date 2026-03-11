@@ -10,7 +10,7 @@ public record ApiResponse<T>(
         boolean success,
         String message,
         T data,
-        String failure_message,
+        String failureMessage,
         Instant timestamp
 ) {
 }

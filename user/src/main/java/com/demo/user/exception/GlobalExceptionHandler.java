@@ -44,21 +44,11 @@ public class GlobalExceptionHandler {
     }
 
 
-    // Handle checked exceptions
-    @ExceptionHandler(BaseCheckedException.class)
-    public ResponseEntity<ApiResponse<Object>> handleCheckedException(BaseCheckedException ex) {
 
-        ApiResponse<Object> response = ApiResponse.builder()
-                .status(ex.getStatus().value())
-                .success(false)
-                .message("Request Failed")
-                .data(null)
-                .failure_message(ex.getMessage())
-                .timestamp(Instant.now())
-                .build();
 
-        return ResponseEntity.status(ex.getStatus()).body(response);
-    }
+
+
+
 
 
     // Fallback for any uncaught exception
