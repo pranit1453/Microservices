@@ -8,11 +8,11 @@ import jakarta.validation.constraints.Size;
 public record CreateUserRequest(
         @NotBlank(message = "First name is required!")
         @Size(min = 2,max = 100,message = "First name must be between 2 and 100 characters")
-        String firstname,
+        String firstName,
 
         @NotBlank(message = "Last name is required!")
         @Size(min = 2, max = 100, message = "Last name must be between 2 and 100 characters")
-        String lastname,
+        String lastName,
 
         @NotBlank(message = "Email is required!")
         @Email(message = "Invalid email format")

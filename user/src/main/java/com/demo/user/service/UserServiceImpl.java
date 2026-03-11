@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
         try {
             User user = userMapper.toEntity(request);
             user.setEmail(email);
-            User savedUser = userRepository.save(user);
+            User savedUser = userRepository.saveAndFlush(user);
             log.info("User created successfully with id: {}", savedUser.getId());
             return userMapper.toResponse(savedUser);
         } catch (DataIntegrityViolationException ex) {
@@ -82,6 +82,7 @@ public class UserServiceImpl implements UserService {
         });
 
         try {
+            userMapper.updateUserFromDto(request, user);
             if (request.email() != null && !request.email().isBlank()) {
                 String email = normalizeEmail(request.email());
                 if (!email.equalsIgnoreCase(user.getEmail()) && userRepository.existsByEmail(email)) {
@@ -90,7 +91,6 @@ public class UserServiceImpl implements UserService {
                 }
                 user.setEmail(email);
             }
-            userMapper.updateUserFromDto(request, user);
             User updated = userRepository.save(user);
             log.info("User updated successfully with id: {}", id);
             return userMapper.toResponse(updated);
