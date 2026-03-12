@@ -32,7 +32,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id", nullable = false, updatable = false)
     private UUID id;
-
+    @NotBlank(message = "Username is required")
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+    @Pattern(
+            regexp = "^[a-zA-Z0-9._]+$",
+            message = "Username can contain only letters, numbers, dots and underscores"
+    )
+    @Column(name = "username", nullable = false, unique = true, length = 50)
+    private String username;
     @NotBlank(message = "First name is required")
     @Size(min = 2, max = 100, message = "First name must be between 2 and 100 characters")
     @Column(name = "first_name", nullable = false, length = 100)
